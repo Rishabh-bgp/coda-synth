@@ -1,12 +1,15 @@
 # CoDA-Synth
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-Rishabh--bgp%2Fcoda--synth-181717?logo=github)](https://github.com/Rishabh-bgp/coda-synth)
 
 Stylometric detection of LLM-rewritten dark-web documents using sparse TF–IDF features.
 
 Browser research lab: generate a synthetic proxy corpus, fit a sparse linear detector, inspect n-grams, and export a methods report. **Public / synthetic corpora only — no live dark-web crawl.**
 
-Live app: built as a TanStack Start lab. Colab notebook: [`public/coda_synth_colab.ipynb`](public/coda_synth_colab.ipynb).
+Repository: [github.com/Rishabh-bgp/coda-synth](https://github.com/Rishabh-bgp/coda-synth)
+
+Colab notebook: [`public/coda_synth_colab.ipynb`](public/coda_synth_colab.ipynb)
 
 ## Ethics lock
 
@@ -35,6 +38,8 @@ The traditional-ML pipeline from the CoDA-Synth project guide:
 ## Run locally
 
 ```bash
+git clone https://github.com/Rishabh-bgp/coda-synth.git
+cd coda-synth
 npm install
 npm run dev
 ```
@@ -46,6 +51,8 @@ npm run typecheck
 npm test
 npm run build
 ```
+
+Optional Colab path: open [`public/coda_synth_colab.ipynb`](public/coda_synth_colab.ipynb). The methods PDF lives at [`attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf`](attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf).
 
 ## Routes
 
@@ -59,6 +66,10 @@ npm run build
 | `/detect` | Live probe + optional Grok paraphrase |
 | `/report` | Filled methods chapter, markdown export |
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Please keep the ethics lock.
+
 ## License
 
 Released under the [MIT License](LICENSE). Copyright © 2026 Er. Rishabh Aryan.
@@ -68,6 +79,8 @@ Released under the [MIT License](LICENSE). Copyright © 2026 Er. Rishabh Aryan.
 - Jin, Y., Jang, E., Lee, Y., Shin, S., & Chung, J.-W. (2022). Shedding New Light on the Language of the Dark Web. NAACL.
 - Al-Nabki, M. W., Fidalgo, E., Alegre, E., & Fernández-Robles, L. (2017/2019). DUTA / DUTA-10K.
 - Jin et al. (2023). DarkBERT. ACL. Related work — this lab does not run DarkBERT.
+
+Software citation: see [`CITATION.cff`](CITATION.cff).
 
 ## Note
 

@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "CoDA-Synth"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: Aryan
+    given-names: Rishabh
+    email: rishabharyan887@gmail.com
+    affiliation: Indian Institute of Information Technology Bhagalpur
+license: MIT
+repository-code: "https://github.com/Rishabh-bgp/coda-synth"
+abstract: >-
+  Stylometric detection of LLM-rewritten dark-web documents using sparse
+  TF–IDF features. Browser research lab with a synthetic proxy corpus,
+  LinearSVC / logistic detectors, and a methods report. Public / synthetic
+  corpora only.
+keywords:
+  - stylometry
+  - TF-IDF
+  - LinearSVC
+  - LLM detection
+  - dark web
+  - CoDA

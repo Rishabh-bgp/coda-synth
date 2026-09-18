@@ -16,3 +16,4 @@ screenshots
 .project_id
 public/coda-synth-github.zip
 public/__grok
+docs/screenshots/*.png
