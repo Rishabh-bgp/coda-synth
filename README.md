@@ -233,17 +233,15 @@ Think of it as a kitchen line:
 ### Table 2. Pipeline stages
 
 | Stage | What you get | Tool in Colab | This website |
-| --- | --- | --- |
-| Load + clean | `raw.csv` | pandas, regex | proxy generator + HTML/whitespace strip |
-| Synthesize rewrites | `coda_synth.csv` | transformers or an allowed API | two rewriters: `polish-A`, `rhythm-B` |
-| Id-safe split | train / val / test | sklearn `train_test_split` on ids | same 70 / 15 / 15 on `doc_id` |
-| Features | sparse matrix + style numbers | `TfidfVectorizer`, `hstack` | word + char_wb + scaled stylo |
-| Classify | two models | LinearSVC, LogisticRegression, XGB | LinearSVC hinge + logistic SGD |
-| Evaluate | reports + plots | sklearn.metrics, matplotlib | ablation, confusion, ROC, RQ3/RQ4 |
+| :--- | :--- | :--- | :--- |
+| **Load + clean** | `raw.csv` | pandas, regex | proxy generator + HTML/whitespace strip |
+| **Synthesize rewrites** | `coda_synth.csv` | transformers or an allowed API | two rewriters: `polish-A`, `rhythm-B` |
+| **Id-safe split** | train / val / test | sklearn `train_test_split` on ids | same 70 / 15 / 15 on `doc_id` |
+| **Features** | sparse matrix + style numbers | `TfidfVectorizer`, `hstack` | word + char_wb + scaled stylo |
+| **Classify** | two models | LinearSVC, LogisticRegression, XGB | LinearSVC hinge + logistic SGD |
+| **Evaluate** | reports + plots | sklearn.metrics, matplotlib | ablation, confusion, ROC, RQ3/RQ4 |
 
-**Train / val / test in one sentence:** train is the textbook, val is the practice quiz you use to pick settings, test is the real exam you only take once.
-
----
+**Train / val / test in one sentence:** Train is the textbook, val is the practice quiz you use to pick settings, and test is the real exam you only take once.
 
 ## Cleaning the text
 
