@@ -52,8 +52,6 @@ npm test
 npm run build
 ```
 
-Optional Colab path: open [`public/coda_synth_colab.ipynb`](public/coda_synth_colab.ipynb). The methods PDF lives at [`attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf`](attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf).
-
 ## Routes
 
 | Path | Page |
