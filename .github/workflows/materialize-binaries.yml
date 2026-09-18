@@ -1,7 +1,7 @@
 name: Materialize binary assets
 
-# GitHub's file API stores UTF-8 text. JPEG/PDF bytes cannot travel that path,
-# so the repo keeps base64 sidecars and this workflow writes the real files.
+# GitHub's file API stores UTF-8 text. JPEG/PDF/ZIP bytes cannot travel that
+# path, so the repo keeps base64 sidecars and this workflow writes the real files.
 on:
   push:
     paths:
@@ -17,14 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Decode JPEG and PDF
+        with:
+          persist-credentials: true
+      - name: Decode JPEG, PDF, and source zip
         run: |
           set -euo pipefail
           mkdir -p public attachments
-          cat assets-b64/og.jpg.b64.0 assets-b64/og.jpg.b64.1 | base64 -d > public/og.jpg
-          base64 -d assets-b64/x-banner.jpg.b64 > public/x-banner.jpg
-          base64 -d assets-b64/CoDA-Synth_Traditional_ML_Colab_Guide.pdf.b64 \
-            > attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf
+          cat assets-b64/parts/og-00 assets-b64/parts/og-01 assets-b64/parts/og-02 \
+              assets-b64/parts/og-03 assets-b64/parts/og-04 assets-b64/parts/og-05 \
+              assets-b64/parts/og-06 assets-b64/parts/og-07 assets-b64/parts/og-08 \
+            | base64 -d > public/og.jpg
+          cat assets-b64/parts/xb-00 assets-b64/parts/xb-01 assets-b64/parts/xb-02 \
+              assets-b64/parts/xb-03 assets-b64/parts/xb-04 \
+            | base64 -d > public/x-banner.jpg
+          cat assets-b64/parts/pdf-00 assets-b64/parts/pdf-01 assets-b64/parts/pdf-02 \
+              assets-b64/parts/pdf-03 assets-b64/parts/pdf-04 \
+            | base64 -d > attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf
           python3 - <<'PY'
           from pathlib import Path
           og = Path("public/og.jpg").read_bytes()
@@ -35,15 +43,32 @@ jobs:
           assert pdf.startswith(b"%PDF"), pdf[:8]
           print("decoded ok", len(og), len(xb), len(pdf))
           PY
+          rm -f public/coda-synth-github.zip
+          zip -r public/coda-synth-github.zip . \
+            -x '.git/*' \
+            -x '.git/**' \
+            -x 'public/coda-synth-github.zip' \
+            -x 'node_modules/*' \
+            -x 'node_modules/**' \
+            -x 'dist/*' \
+            -x '.output/*'
+          python3 - <<'PY'
+          from pathlib import Path
+          z = Path("public/coda-synth-github.zip").read_bytes()
+          assert z[:2] == b"PK", z[:8]
+          print("zip ok", len(z))
+          PY
       - name: Commit binaries if they changed
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/og.jpg public/x-banner.jpg attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf
+          git add -f public/og.jpg public/x-banner.jpg \
+            attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf \
+            public/coda-synth-github.zip
           if git diff --cached --quiet; then
             echo "No binary changes"
           else
-            git commit -m "Add binary share cards and methods PDF"
+            git commit -m "Add methods PDF, share cards, and source zip"
             git push
           fi

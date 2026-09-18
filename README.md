@@ -16,7 +16,7 @@
 | Full methods chapter (plain English + every Colab cell) | [docs/GUIDE.md](docs/GUIDE.md) |
 | Ready-to-run Colab notebook | [public/coda_synth_colab.ipynb](public/coda_synth_colab.ipynb) |
 | Original methods PDF | [attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf](attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf) |
-| Download this repo | [ZIP of main](https://github.com/Rishabh-bgp/coda-synth/archive/refs/heads/main.zip) |
+| Source zip | [public/coda-synth-github.zip](public/coda-synth-github.zip) · [always-current GitHub archive](https://github.com/Rishabh-bgp/coda-synth/archive/refs/heads/main.zip) |
 | How to cite | [CITATION.cff](CITATION.cff) |
 | License | [MIT](LICENSE) · © 2026 Er. Rishabh Aryan |
 
