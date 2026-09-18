@@ -2,6 +2,8 @@
 
 This is the full student walkthrough — the same material as the original Colab PDF, written in plain English.
 
+The GitHub [README](../README.md) now includes this chapter on the repository home page as well. These files are the same content split into shorter pages if you want to print or share one section at a time.
+
 Read it in order:
 
 1. [01 — What this is, ethics, research questions, the browser lab](01-overview.md)
