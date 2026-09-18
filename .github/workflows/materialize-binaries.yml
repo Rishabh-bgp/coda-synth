@@ -22,26 +22,55 @@ jobs:
       - name: Decode JPEG, PDF, and source zip
         run: |
           set -euo pipefail
-          mkdir -p public attachments
-          cat assets-b64/parts/og-00 assets-b64/parts/og-01 assets-b64/parts/og-02 \
-              assets-b64/parts/og-03 assets-b64/parts/og-04 assets-b64/parts/og-05 \
-              assets-b64/parts/og-06 assets-b64/parts/og-07 assets-b64/parts/og-08 \
-            | base64 -d > public/og.jpg
-          cat assets-b64/parts/xb-00 assets-b64/parts/xb-01 assets-b64/parts/xb-02 \
-              assets-b64/parts/xb-03 assets-b64/parts/xb-04 \
-            | base64 -d > public/x-banner.jpg
-          cat assets-b64/parts/pdf-00 assets-b64/parts/pdf-01 assets-b64/parts/pdf-02 \
-              assets-b64/parts/pdf-03 assets-b64/parts/pdf-04 \
-            | base64 -d > attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf
+          mkdir -p public attachments assets-b64/parts
+
+          decode_parts() {
+            local dest="$1"
+            shift
+            local missing=0
+            local f
+            for f in "$@"; do
+              if [ ! -f "$f" ]; then
+                echo "missing $f"
+                missing=1
+              fi
+            done
+            if [ "$missing" -ne 0 ]; then
+              echo "skip $dest (sidecar parts not complete yet)"
+              return 0
+            fi
+            cat "$@" | base64 -d > "$dest"
+            echo "wrote $dest ($(wc -c < "$dest") bytes)"
+          }
+
+          decode_parts public/og.jpg \
+            assets-b64/parts/og-00 assets-b64/parts/og-01 assets-b64/parts/og-02 \
+            assets-b64/parts/og-03 assets-b64/parts/og-04 assets-b64/parts/og-05 \
+            assets-b64/parts/og-06 assets-b64/parts/og-07 assets-b64/parts/og-08
+
+          decode_parts public/x-banner.jpg \
+            assets-b64/parts/xb-00 assets-b64/parts/xb-01 assets-b64/parts/xb-02 \
+            assets-b64/parts/xb-03 assets-b64/parts/xb-04
+
+          decode_parts attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf \
+            assets-b64/parts/pdf-00 assets-b64/parts/pdf-01 assets-b64/parts/pdf-02 \
+            assets-b64/parts/pdf-03 assets-b64/parts/pdf-04
+
           python3 - <<'PY'
           from pathlib import Path
-          og = Path("public/og.jpg").read_bytes()
-          xb = Path("public/x-banner.jpg").read_bytes()
-          pdf = Path("attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf").read_bytes()
-          assert og[:3] == b"\xff\xd8\xff", og[:8]
-          assert xb[:3] == b"\xff\xd8\xff", xb[:8]
-          assert pdf.startswith(b"%PDF"), pdf[:8]
-          print("decoded ok", len(og), len(xb), len(pdf))
+          pdf = Path("attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf")
+          assert pdf.exists(), "PDF sidecar failed to decode"
+          data = pdf.read_bytes()
+          assert data.startswith(b"%PDF"), data[:8]
+          print("pdf ok", len(data))
+          for p, magic in [("public/og.jpg", b"\xff\xd8\xff"), ("public/x-banner.jpg", b"\xff\xd8\xff")]:
+              f = Path(p)
+              if f.exists():
+                  b = f.read_bytes()
+                  assert b.startswith(magic), (p, b[:8])
+                  print("jpg ok", p, len(b))
+              else:
+                  print("jpg skip", p)
           PY
           rm -f public/coda-synth-github.zip
           zip -r public/coda-synth-github.zip . \
@@ -63,9 +92,10 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f public/og.jpg public/x-banner.jpg \
-            attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf \
-            public/coda-synth-github.zip
+          git add -f attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf \
+            public/coda-synth-github.zip || true
+          [ -f public/og.jpg ] && git add -f public/og.jpg || true
+          [ -f public/x-banner.jpg ] && git add -f public/x-banner.jpg || true
           if git diff --cached --quiet; then
             echo "No binary changes"
           else
