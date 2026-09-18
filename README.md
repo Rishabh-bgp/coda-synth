@@ -1,5 +1,8 @@
 # CoDA-Synth
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-Rishabh--bgp%2Fcoda--synth-181717?logo=github)](https://github.com/Rishabh-bgp/coda-synth)
+
 **A research lab that asks a simple question:**  
 *If someone takes a dark-web document and asks an AI to rewrite it, can a classic (non-ChatGPT) computer model still tell the original human writing from the AI rewrite — just by looking at word patterns and writing style?*
 
@@ -27,7 +30,7 @@ There are **two jobs** at once:
 
 We also **never** download live dark-web pages. We only use text that researchers already published (or a fake “practice” copy of that text in this website).
 
-Continue with [part 2](02-method.md) (recipe and features) and [part 3](03-colab-and-report.md) (Colab cells).
+Continue with [part 2](#the-recipe-from-start-to-finish) (recipe and features) and [part 3](#google-colab-setup) (Colab cells).
 
 ---
 
@@ -126,6 +129,23 @@ Then, in your browser, it:
 - Zustand for lab state; charts for ablation, confusion, ROC
 - Optional user-clicked Grok paraphrase (only if an API key exists; never automatic)
 
+### Run it on your computer
+
+```bash
+git clone https://github.com/Rishabh-bgp/coda-synth.git
+cd coda-synth
+npm install
+npm run dev
+```
+
+Then open http://localhost:8080
+
+```bash
+npm run typecheck
+npm test
+npm run build
+```
+
 ### Pages in the lab
 
 | Address | What you will see |
@@ -142,13 +162,13 @@ Then, in your browser, it:
 
 | Guide (Python / sklearn) | File in this repo |
 | --- | --- |
-| Word and character `TfidfVectorizer` | [`src/lib/coda/tfidf.ts`](../src/lib/coda/tfidf.ts) |
-| 11 style numbers + `StandardScaler` | [`src/lib/coda/stylo.ts`](../src/lib/coda/stylo.ts), [`src/lib/coda/sparse.ts`](../src/lib/coda/sparse.ts) |
-| Stacking the three feature blocks | [`src/lib/coda/sparse.ts`](../src/lib/coda/sparse.ts) |
-| Split on `doc_id` 70 / 15 / 15 | [`src/lib/coda/split.ts`](../src/lib/coda/split.ts) |
-| LinearSVC + logistic regression | [`src/lib/coda/linear.ts`](../src/lib/coda/linear.ts) |
-| Ablations and RQ1–RQ4 | [`src/lib/coda/pipeline.ts`](../src/lib/coda/pipeline.ts) |
-| Proxy texts + two rewriters | [`src/lib/coda/corpus.ts`](../src/lib/coda/corpus.ts), [`src/lib/coda/rewrite.ts`](../src/lib/coda/rewrite.ts) |
+| Word and character `TfidfVectorizer` | [`src/lib/coda/tfidf.ts`](src/lib/coda/tfidf.ts) |
+| 11 style numbers + `StandardScaler` | [`src/lib/coda/stylo.ts`](src/lib/coda/stylo.ts), [`src/lib/coda/sparse.ts`](src/lib/coda/sparse.ts) |
+| Stacking the three feature blocks | [`src/lib/coda/sparse.ts`](src/lib/coda/sparse.ts) |
+| Split on `doc_id` 70 / 15 / 15 | [`src/lib/coda/split.ts`](src/lib/coda/split.ts) |
+| LinearSVC + logistic regression | [`src/lib/coda/linear.ts`](src/lib/coda/linear.ts) |
+| Ablations and RQ1–RQ4 | [`src/lib/coda/pipeline.ts`](src/lib/coda/pipeline.ts) |
+| Proxy texts + two rewriters | [`src/lib/coda/corpus.ts`](src/lib/coda/corpus.ts), [`src/lib/coda/rewrite.ts`](src/lib/coda/rewrite.ts) |
 
 **Important:** the default rewriter in this website is a **rule-based style tweaker** (plus an optional Grok call if you click it). Scores here are for learning the pipeline, not for accusing real posts.
 
@@ -195,7 +215,7 @@ This repo **does not ship CoDA**. The website generates a synthetic proxy so any
 - Store CoDA on your **private** Google Drive. Do not put the raw dump on GitHub.
 - If a document looks like CSAM or trafficking, drop the row and do not inspect further. CoDA authors already filtered media.
 
-Next: [part 2 — recipe, features, classifiers](02-method.md).
+Next: [part 2 — recipe, features, classifiers](#the-recipe-from-start-to-finish).
 
 ## The recipe, from start to finish
 
@@ -719,6 +739,17 @@ Copy this for a supervisor, a teacher, or the first slide:
 > This project studies whether classical sparse features can detect LLM paraphrases of public dark-web documents while still classifying the original CoDA topic. Using only research corpora and a controlled rewrite protocol, we train LinearSVC and logistic models on word TF–IDF, character n-grams, and stylometry, with document-id splits to block pair leakage. The work is fully implementable in Google Colab on CPU after an optional GPU paraphrase pass, and it treats generated underground text as a measurement problem rather than an operational collection problem.
 
 ---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Please keep the ethics lock.
+
+1. Fork and branch from `main`.
+2. Prefer the in-browser sparse TF–IDF / LinearSVC pipeline. If you add a Python path, update the Colab notebook too.
+3. Run `npm run typecheck` and `npm test`.
+4. In the pull request, say which research question or lab page the change helps.
+
+By contributing you agree the work is released under the [MIT License](LICENSE).
 
 ## License
 
