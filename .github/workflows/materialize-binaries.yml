@@ -1,0 +1,49 @@
+name: Materialize binary assets
+
+# GitHub's file API stores UTF-8 text. JPEG/PDF bytes cannot travel that path,
+# so the repo keeps base64 sidecars and this workflow writes the real files.
+on:
+  push:
+    paths:
+      - "assets-b64/**"
+      - ".github/workflows/materialize-binaries.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode JPEG and PDF
+        run: |
+          set -euo pipefail
+          mkdir -p public attachments
+          cat assets-b64/og.jpg.b64.0 assets-b64/og.jpg.b64.1 | base64 -d > public/og.jpg
+          base64 -d assets-b64/x-banner.jpg.b64 > public/x-banner.jpg
+          base64 -d assets-b64/CoDA-Synth_Traditional_ML_Colab_Guide.pdf.b64 \
+            > attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf
+          python3 - <<'PY'
+          from pathlib import Path
+          og = Path("public/og.jpg").read_bytes()
+          xb = Path("public/x-banner.jpg").read_bytes()
+          pdf = Path("attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf").read_bytes()
+          assert og[:3] == b"\xff\xd8\xff", og[:8]
+          assert xb[:3] == b"\xff\xd8\xff", xb[:8]
+          assert pdf.startswith(b"%PDF"), pdf[:8]
+          print("decoded ok", len(og), len(xb), len(pdf))
+          PY
+      - name: Commit binaries if they changed
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/og.jpg public/x-banner.jpg attachments/CoDA-Synth_Traditional_ML_Colab_Guide.pdf
+          if git diff --cached --quiet; then
+            echo "No binary changes"
+          else
+            git commit -m "Add binary share cards and methods PDF"
+            git push
+          fi
